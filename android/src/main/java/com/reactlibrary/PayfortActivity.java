@@ -38,7 +38,7 @@ public class PayfortActivity extends Activity {
 
     FortCallBackManager fortCallback;
     ProgressDialog pbLoading;
-    String deviceId, accessCode, merchantIdentifier, requestPhrase,
+    String deviceId, isLive, accessCode, merchantIdentifier, requestPhrase,
             customerEmail, currency, amount, merchantReference, customerName, customerIp, paymentOption, orderDescription;
 
     @Override
@@ -60,6 +60,9 @@ public class PayfortActivity extends Activity {
 
     private void parseData() {
         Intent intent = getIntent();
+        if (intent.hasExtra("is_live")) {
+            isLive = intent.getStringExtra("is_live");
+        }
         if (intent.hasExtra("access_code")) {
             accessCode = intent.getStringExtra("access_code");
         }
@@ -96,6 +99,11 @@ public class PayfortActivity extends Activity {
     }
 
     private void requestGetToken() {
+        String url = "https://sbpaymentservices.payfort.com/FortAPI/paymentApi";
+        if(isLive == "1") {
+            url = "https://paymentservices.payfort.com/FortAPI/paymentApi";
+        }
+
         RequestQueue queue = Volley.newRequestQueue(this);
         Map<String, String> params = new HashMap<>();
         params.put("service_command", "SDK_TOKEN");
@@ -105,7 +113,7 @@ public class PayfortActivity extends Activity {
         params.put("device_id", deviceId);
         params.put("signature", hashSignature(requestPhrase + "access_code=" + accessCode + "device_id=" + deviceId + "language=enmerchant_identifier=" + merchantIdentifier + "service_command=SDK_TOKEN" + requestPhrase));
         JSONObject parameters = new JSONObject(params);
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, "https://sbpaymentservices.payfort.com/FortAPI/paymentApi", parameters, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, , parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 pbLoading.dismiss();

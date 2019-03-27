@@ -30,6 +30,9 @@ public class RNReactNativePayfortSdkModule extends ReactContextBaseJavaModule {
     this.onFail = onFail;
 
     Intent intent = new Intent(getCurrentActivity(), PayfortActivity.class);
+    if(data.hasKey("is_live")) {
+      intent.putExtra("is_live", data.getString("is_live"));
+    }
     if(data.hasKey("access_code")) {
       intent.putExtra("access_code", data.getString("access_code"));
     }
