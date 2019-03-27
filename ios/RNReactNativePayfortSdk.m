@@ -8,6 +8,8 @@
     NSDictionary *data;
     PayFortController *payfort;
     UIViewController *rootViewController;
+    UIActivityIndicatorView *simiLoading;
+
 }
 
 - (dispatch_queue_t)methodQueue
@@ -25,6 +27,7 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
 }
 
 - (void)handleTokenString{
+  [self startLoadingData];
     dispatch_async(dispatch_get_main_queue(), ^{
         rootViewController = (UIViewController*)[UIApplication sharedApplication].delegate.window.rootViewController;
     });
@@ -46,7 +49,13 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
     
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil];
-    NSURL *url = [NSURL URLWithString:@"https://sbpaymentservices.payfort.com/FortAPI/paymentApi"];
+    NSURL *url;
+  
+    if ([data[@"is_live"] isEqualToString:@"1"]) {
+      url = [NSURL URLWithString:@"https://paymentservices.payfort.com/FortAPI/paymentApi"];
+    }else{
+      url = [NSURL URLWithString:@"https://sbpaymentservices.payfort.com/FortAPI/paymentApi"];
+    }
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
                                                            cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                        timeoutInterval:60.0];
@@ -80,6 +89,8 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
 }
 
 - (void)openPayfort:(NSString *)sdkToken{
+    [self stopLoadingData];
+
     NSMutableDictionary *request = [[NSMutableDictionary alloc]init];
     [request setValue:data[@"amount"] forKey:@"amount"];
     [request setValue:data[@"currency"] forKey:@"currency"];
@@ -92,8 +103,13 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
     [request setValue:@"en" forKey:@"language"];
     [request setValue:@"VISA" forKey:@"payment_option"];
     [request setValue:@"ECOMMERCE" forKey:@"eci"];
-    
+  
+  if ([data[@"is_live"] isEqualToString:@"1"]) {
+    payfort = [[PayFortController alloc] initWithEnviroment:KPayFortEnviromentProduction];
+  }else{
     payfort = [[PayFortController alloc] initWithEnviroment:KPayFortEnviromentSandBox];
+  }
+  
     payfort.IsShowResponsePage = true;
     
     NSArray *events = @[];
@@ -129,6 +145,29 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
     [output appendFormat:@"%02x", digest[i]];
     
     return output;
+}
+
+
+- (void)startLoadingData{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    CGRect frame = rootViewController.view.bounds;
+    simiLoading = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    simiLoading.hidesWhenStopped = YES;
+    simiLoading.center = CGPointMake(frame.size.width/2, frame.size.height/2);
+    [rootViewController.view addSubview:simiLoading];
+    rootViewController.view.userInteractionEnabled = NO;
+    [simiLoading startAnimating];
+    rootViewController.view.alpha = 0.5;
+  });
+}
+
+- (void)stopLoadingData{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    rootViewController.view.userInteractionEnabled = YES;
+    rootViewController.view.alpha = 1;
+    [simiLoading stopAnimating];
+    [simiLoading removeFromSuperview];
+  });
 }
 
 
