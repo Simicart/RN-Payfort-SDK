@@ -7,7 +7,7 @@
 
 #import <PayFortSDK/PayFortSDK.h>
 
-@interface RNReactNativePayfortSdk : NSObject <RCTBridgeModule>
+@interface RNReactNativePayfortSdk : NSObject <RCTBridgeModule, NSURLSessionDelegate>
 
 @end
-  
+
