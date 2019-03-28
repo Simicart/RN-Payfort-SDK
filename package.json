@@ -10,6 +10,10 @@
   "keywords": [
     "react-native", "payfort", "android", "ios", "payment"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:crabbynguyen/RN-Payfort-SDK.git"
+  },
   "author": "Glenn, Chau",
   "license": "MIT",
   "peerDependencies": {
