@@ -30,8 +30,6 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
     rootViewController = (UIViewController*)[UIApplication sharedApplication].delegate.window.rootViewController;
     [self handleTokenString];
   });
-  
-  
 }
 
 - (void)handleTokenString{
@@ -121,6 +119,8 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
   [request setValue:@"VISA" forKey:@"payment_option"];
   [request setValue:@"ECOMMERCE" forKey:@"eci"];
   
+  dispatch_async(dispatch_get_main_queue(), ^{
+  
   if ([data[@"is_live"] isEqualToString:@"1"]) {
     payfort = [[PayFortController alloc] initWithEnviroment:KPayFortEnviromentProduction];
   }else{
@@ -144,6 +144,7 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
                               NSLog(@"Faild");
                               NSLog(@"responeDic=%@",responeDic);
                             }];
+  });
 }
 
 
