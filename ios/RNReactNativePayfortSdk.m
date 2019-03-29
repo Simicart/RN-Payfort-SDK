@@ -48,60 +48,62 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
 }
 
 - (void)requestTokenSDK:(NSString *)signature{
-  NSError *error;
-  NSURL *url;
-  if ([data[@"is_live"] isEqualToString:@"1"]) {
-    url = [NSURL URLWithString:@"https://paymentservices.payfort.com/FortAPI/paymentApi"];
-  }else{
-    url = [NSURL URLWithString:@"https://sbpaymentservices.payfort.com/FortAPI/paymentApi"];
-  }
-  
-  NSDictionary* tmp = @{ @"service_command": @"SDK_TOKEN",
-                         @"merchant_identifier": data[@"merchant_identifier"],
-                         @"access_code": data[@"access_code"],
-                         @"signature": signature,
-                         @"language": @"en",
-                         @"device_id": udidString
-                         };
-  NSData *postdata = [NSJSONSerialization dataWithJSONObject:tmp options:0 error:&error];
-  
-  NSString *postLength = [NSString stringWithFormat:@"%ld",[postdata length]];
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-  [request setURL:url];
-  [request setHTTPMethod:@"POST"];
-  [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
-  [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-  [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-  [request setHTTPBody:postdata];
-  
-  NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request
-                                                               completionHandler:^(NSData *data,
-                                                                                   NSURLResponse *response,
-                                                                                   NSError *error)
-                                {
-                                  if (!error)
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSError *error;
+    NSURL *url;
+    if ([data[@"is_live"] isEqualToString:@"1"]) {
+      url = [NSURL URLWithString:@"https://paymentservices.payfort.com/FortAPI/paymentApi"];
+    }else{
+      url = [NSURL URLWithString:@"https://sbpaymentservices.payfort.com/FortAPI/paymentApi"];
+    }
+    
+    NSDictionary* tmp = @{ @"service_command": @"SDK_TOKEN",
+                           @"merchant_identifier": data[@"merchant_identifier"],
+                           @"access_code": data[@"access_code"],
+                           @"signature": signature,
+                           @"language": data[@"language"],
+                           @"device_id": udidString
+                           };
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:tmp options:0 error:&error];
+    
+    NSString *postLength = [NSString stringWithFormat:@"%ld",[postdata length]];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:postdata];
+    
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request
+                                                                 completionHandler:^(NSData *data,
+                                                                                     NSURLResponse *response,
+                                                                                     NSError *error)
                                   {
-                                    NSError *error = nil;
-                                    id object = [NSJSONSerialization
-                                                 JSONObjectWithData:data
-                                                 options:0
-                                                 error:&error];
-                                    NSLog(@"object %@",object);
-                                    
-                                    if(error) {
-                                      NSLog(@"Error %@",error);
-                                      return;
+                                    if (!error)
+                                    {
+                                      NSError *error = nil;
+                                      id object = [NSJSONSerialization
+                                                   JSONObjectWithData:data
+                                                   options:0
+                                                   error:&error];
+                                      NSLog(@"object %@",object);
+                                      
+                                      if(error) {
+                                        NSLog(@"Error %@",error);
+                                        return;
+                                      }
+                                      NSString *sdk_token = object[@"sdk_token"];
+                                      [self openPayfort:sdk_token];
+                                      
                                     }
-                                    NSString *sdk_token = object[@"sdk_token"];
-                                    [self openPayfort:sdk_token];
-                                    
-                                  }
-                                  else
-                                  {
-                                    NSLog(@"Error: %@", error.localizedDescription);
-                                  }
-                                }];
-  [task resume];
+                                    else
+                                    {
+                                      NSLog(@"Error: %@", error.localizedDescription);
+                                    }
+                                  }];
+    [task resume];
+  });
 }
 
 - (void)openPayfort:(NSString *)sdkToken{
@@ -120,30 +122,25 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
   [request setValue:@"ECOMMERCE" forKey:@"eci"];
   
   dispatch_async(dispatch_get_main_queue(), ^{
-  
-  if ([data[@"is_live"] isEqualToString:@"1"]) {
-    payfort = [[PayFortController alloc] initWithEnviroment:KPayFortEnviromentProduction];
-  }else{
-    payfort = [[PayFortController alloc] initWithEnviroment:KPayFortEnviromentSandBox];
-  }
-  payfort.IsShowResponsePage = true;
-  
-  NSArray *events = @[];
-  [payfort callPayFortWithRequest:request currentViewController:rootViewController
-                          Success:^(NSDictionary *requestDic, NSDictionary *responeDic) {
-                            NSLog(@"Success");
-                            NSLog(@"responeDic=%@",responeDic);
-                            onDoneClick(@[[NSNull null], events]);
-                          }
-                         Canceled:^(NSDictionary *requestDic, NSDictionary *responeDic) {
-                           NSLog(@"Canceled");
-                           NSLog(@"responeDic=%@",responeDic);
-                           onCancelClick(@[[NSNull null], events]);
-                         }
-                            Faild:^(NSDictionary *requestDic, NSDictionary *responeDic, NSString *message) {
-                              NSLog(@"Faild");
-                              NSLog(@"responeDic=%@",responeDic);
-                            }];
+    
+    if ([data[@"is_live"] isEqualToString:@"1"]) {
+      payfort = [[PayFortController alloc] initWithEnviroment:KPayFortEnviromentProduction];
+    }else{
+      payfort = [[PayFortController alloc] initWithEnviroment:KPayFortEnviromentSandBox];
+    }
+    payfort.IsShowResponsePage = true;
+    
+    NSArray *events = @[];
+    [payfort callPayFortWithRequest:request currentViewController:rootViewController
+                            Success:^(NSDictionary *requestDic, NSDictionary *responeDic) {
+                              onDoneClick(@[responeDic, events]);
+                            }
+                           Canceled:^(NSDictionary *requestDic, NSDictionary *responeDic) {
+                             onCancelClick(@[@"cancel", events]);
+                           }
+                              Faild:^(NSDictionary *requestDic, NSDictionary *responeDic, NSString *message) {
+                                onCancelClick(@[message, events]);
+                              }];
   });
 }
 
