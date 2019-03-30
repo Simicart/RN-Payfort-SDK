@@ -113,7 +113,7 @@ public class PayfortActivity extends Activity {
         params.put("device_id", deviceId);
         params.put("signature", hashSignature(requestPhrase + "access_code=" + accessCode + "device_id=" + deviceId + "language=enmerchant_identifier=" + merchantIdentifier + "service_command=SDK_TOKEN" + requestPhrase));
         JSONObject parameters = new JSONObject(params);
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, , parameters, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 pbLoading.dismiss();
@@ -123,7 +123,7 @@ public class PayfortActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     finish();
-                    RNReactNativePayfortSdkModule.onFail.invoke("Error while fetching data");
+                    RNPayfortSdkModule.onFail.invoke("Error while fetching data");
                 }
             }
         }, new Response.ErrorListener() {
@@ -133,7 +133,7 @@ public class PayfortActivity extends Activity {
                 pbLoading.dismiss();
                 Log.e("FAIL", error.toString());
                 finish();
-                RNReactNativePayfortSdkModule.onFail.invoke();
+                RNPayfortSdkModule.onFail.invoke();
             }
         });
         queue.add(jsonRequest);
@@ -177,7 +177,7 @@ public class PayfortActivity extends Activity {
                     if(responseMap.get("response_message") != null && !responseMap.get("response_message").toString().equals("")) {
                         message = responseMap.get("response_message").toString();
                     }
-                    RNReactNativePayfortSdkModule.onFail.invoke(message);
+                    RNPayfortSdkModule.onFail.invoke(message);
                 }
 
                 @Override
@@ -185,7 +185,7 @@ public class PayfortActivity extends Activity {
                         Object> fortResponseMap) {
                     Log.e("Success ", fortResponseMap.toString());
                     finish();
-                    RNReactNativePayfortSdkModule.onSuccess.invoke(fortResponseMap.toString());
+                    RNPayfortSdkModule.onSuccess.invoke(fortResponseMap.toString());
                 }
 
                 @Override
@@ -197,7 +197,7 @@ public class PayfortActivity extends Activity {
                     if(fortResponseMap.get("response_message") != null && !fortResponseMap.get("response_message").toString().equals("")) {
                         message = fortResponseMap.get("response_message").toString();
                     }
-                    RNReactNativePayfortSdkModule.onFail.invoke(message);
+                    RNPayfortSdkModule.onFail.invoke(message);
                 }
 
             });
