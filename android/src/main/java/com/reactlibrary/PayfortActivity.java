@@ -100,7 +100,7 @@ public class PayfortActivity extends Activity {
 
     private void requestGetToken() {
         String url = "https://sbpaymentservices.payfort.com/FortAPI/paymentApi";
-        if(isLive == "1") {
+        if(isLive.equals("1")) {
             url = "https://paymentservices.payfort.com/FortAPI/paymentApi";
         }
 
@@ -166,8 +166,13 @@ public class PayfortActivity extends Activity {
         fortrequest.setRequestMap(collectRequestMap(sdkToken));
         fortrequest.setShowResponsePage(true);
 
+        String environment = FortSdk.ENVIRONMENT.TEST;
+        if(isLive.equals("1")) {
+            environment = FortSdk.ENVIRONMENT.PRODUCTION;
+        }
+
         try {
-            FortSdk.getInstance().registerCallback(PayfortActivity.this, fortrequest, FortSdk.ENVIRONMENT.TEST, 5, fortCallback, new FortInterfaces.OnTnxProcessed() {
+            FortSdk.getInstance().registerCallback(PayfortActivity.this, fortrequest, environment, 5, fortCallback, new FortInterfaces.OnTnxProcessed() {
                 @Override
                 public void onCancel(Map<String, Object> requestParamsMap, Map<String,
                         Object> responseMap) {
