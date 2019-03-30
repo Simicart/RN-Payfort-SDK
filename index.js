@@ -1,6 +1,6 @@
 
 import { NativeModules } from 'react-native';
 
-const { RNReactNativePayfortSdk } = NativeModules;;
+const { RNPayfortSdk } = NativeModules;
 
-export default RNReactNativePayfortSdk;
+export default RNPayfortSdk;

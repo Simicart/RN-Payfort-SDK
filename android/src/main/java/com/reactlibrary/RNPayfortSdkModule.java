@@ -2,6 +2,7 @@
 package com.reactlibrary;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -9,23 +10,23 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
 
-public class RNReactNativePayfortSdkModule extends ReactContextBaseJavaModule {
+public class RNPayfortSdkModule extends ReactContextBaseJavaModule {
 
   private final ReactApplicationContext reactContext;
   public static Callback onSuccess, onFail;
 
-  public RNReactNativePayfortSdkModule(ReactApplicationContext reactContext) {
+  public RNPayfortSdkModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
   }
 
   @Override
   public String getName() {
-    return "PayfortModule";
+    return "RNPayfortSdk";
   }
 
   @ReactMethod
-  public void openPayfort(ReadableMap data, Callback onSuccess, Callback onFail) {
+  public void openPayFort(ReadableMap data, Callback onSuccess, Callback onFail) {
     this.onSuccess = onSuccess;
     this.onFail = onFail;
 
