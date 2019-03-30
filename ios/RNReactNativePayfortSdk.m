@@ -118,8 +118,12 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
   [request setValue:sdkToken forKey:@"sdk_token"];
   [request setValue:@"PURCHASE" forKey:@"command"];
   [request setValue:@"en" forKey:@"language"];
-  [request setValue:@"VISA" forKey:@"payment_option"];
-  [request setValue:@"ECOMMERCE" forKey:@"eci"];
+    if (data[@"payment_option"]) {
+        [request setValue:data[@"payment_option"] forKey:@"payment_option"];
+    }else{
+        [request setValue:@"" forKey:@"payment_option"];
+    }
+[request setValue:@"ECOMMERCE" forKey:@"eci"];
   
   dispatch_async(dispatch_get_main_queue(), ^{
     
