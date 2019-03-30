@@ -26,7 +26,7 @@ public class RNPayfortSdkModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void openPayFort(ReadableMap data, Callback onSuccess, Callback onFail) {
+  public void openPayfort(ReadableMap data, Callback onSuccess, Callback onFail) {
     this.onSuccess = onSuccess;
     this.onFail = onFail;
 
