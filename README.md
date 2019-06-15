@@ -9,37 +9,50 @@
 
 `$ react-native link react-native-payfort-sdk`
 
-### Manual installation
+### Add library to each platform
 
 
 #### iOS
 
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-payfort-sdk` and add `RNReactNativePayfortSdk.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libRNReactNativePayfortSdk.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
+1. Extract [this](https://docs.payfort.com/docs/mobile-sdk/build/lib/PayFortSDK%201.8.zip) folder. 
+2. Drag the `PayFortSDK.framework` & `PayFortSDK.bundle` to `Frameworks` in Project Navigator.
+3. Create a new group `Frameworks` if it does not exist:
+        * Choose Create groups for any added folders.
+        * Make Sure to select Copy files if needed.
+4. Set `-ObjC` in the Other Linker Flags in the `Target` → `Build Settings` Tab.
+5. For Swift Projects Don’t forget to add the `#import` to the `Bridging-Header.h`
 
 #### Android
 
-1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import com.reactlibrary.RNReactNativePayfortSdkPackage;` to the imports at the top of the file
-  - Add `new RNReactNativePayfortSdkPackage()` to the list returned by the `getPackages()` method
-2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-payfort-sdk'
-  	project(':react-native-payfort-sdk').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-payfort-sdk/android')
-  	```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
-      compile project(':react-native-payfort-sdk')
-  	```
+1. Extract [this](https://docs.payfort.com/docs/mobile-sdk/build/lib/FORTSDKv1.5.zip) folder.
+2. In Android Studio, choose `File` → `New` → `New Module` then select `Import .JAR\.AAR Package`.
+3. In the next step, find to the path of .aar file in library folder and press `Finish`.
 
 
 ## Usage
+
+#### First, you have to read the [document](https://docs.payfort.com/docs/mobile-sdk/build/index.html#before-starting-the-integration-section-in-the-api) from Payfort carefully
+
 ```javascript
 import RNReactNativePayfortSdk from 'react-native-payfort-sdk';
 
-// TODO: What to do with the module?
-RNReactNativePayfortSdk;
+let data = {};
+data['access_code'] = 'abcdxyzqwerty';          // require field
+data['merchant_identify'] = 'poilkjyhm';        // require field
+data['request_phrase'] = 'tgbvfe';              // require field
+data['customer_email'] = 'v@example.com';       // require field
+data['currency'] = 'USD';                       // require field
+data['amount'] = '10';                          // require field
+data['merchant_reference'] = '123456';          // require field
+data['customer_name'] = 'Glenn';
+data['customer_ip'] = '27.79.60.231';
+data['payment_option'] = 'VISA';
+data['order_description'] = 'Order for testing';
+
+RNReactNativePayfortSdk.openPayfort(data, (response) => {
+    console.log(response);
+}, (message) => {
+    // Message in case payment is failure or cancel
+});
 ```
   
