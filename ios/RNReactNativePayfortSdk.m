@@ -124,16 +124,20 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
     if (data[@"customer_email"]) {
         [request setValue:data[@"customer_email"] forKey:@"customer_email"];
     }
-    [request setValue:data[@"customer_name"] forKey:@"customer_name"];
-    if (data[@"customer_ip"]) {
-        [request setValue:data[@"customer_ip"] forKey:@"customer_ip"];
+    if (data[@"customer_name"]) {
+        [request setValue:data[@"customer_name"] forKey:@"customer_name"];
     }
+  
     if (data[@"merchant_reference"]) {
         [request setValue:data[@"merchant_reference"] forKey:@"merchant_reference"];
     }
+    
     if (data[@"language"]) {
         [request setValue:data[@"language"] forKey:@"language"];
+    }else{
+        [request setValue:@"en" forKey:@"language"];
     }
+    
     if (data[@"sdk_token"]) {
         [request setValue:data[@"sdk_token"] forKey:@"sdk_token"];
     }
