@@ -141,9 +141,6 @@ RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSen
     if (data[@"sdk_token"]) {
         [request setValue:data[@"sdk_token"] forKey:@"sdk_token"];
     }
-    if (data[@"response_phrase"]) {
-        [request setValue:data[@"response_phrase"] forKey:@"response_phrase"];
-    }
     
     if (data[@"payment_option"]) {
         [request setValue:data[@"payment_option"] forKey:@"payment_option"];
