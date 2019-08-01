@@ -142,11 +142,18 @@ public class PayfortActivity extends Activity {
         requestMap.put("language", "en");
         requestMap.put("merchant_reference", merchantReference);
         requestMap.put("customer_name", customerName);
-        requestMap.put("customer_ip", customerIp);
-        requestMap.put("payment_option", paymentOption);
+        if(customerIp != null) {
+            requestMap.put("customer_ip", customerIp);
+        }
+        if(paymentOption != null) {
+            requestMap.put("payment_option", paymentOption);
+        }
         requestMap.put("eci", "ECOMMERCE");
-        requestMap.put("order_description", orderDescription);
+        if(orderDescription != null) {
+            requestMap.put("order_description", orderDescription);
+        }
         requestMap.put("sdk_token", sdkToken);
+        Log.e("PayfortMap", requestMap.toString());
         return requestMap;
     }
 
