@@ -18,7 +18,7 @@
 {
     return dispatch_get_main_queue();
 }
-RCT_EXPORT_MODULE();
+RCT_EXPORT_MODULE(RNReactNativePayfortSdk);
 
 RCT_EXPORT_METHOD(openPayfort:(NSDictionary *)indic createDialog:(RCTResponseSenderBlock)doneCallback createDialog:(RCTResponseSenderBlock)cancelCallback) {
     onDoneClick = doneCallback;
