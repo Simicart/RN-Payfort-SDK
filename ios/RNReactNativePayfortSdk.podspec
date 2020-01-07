@@ -1,3 +1,5 @@
+require 'json'
+pjson = JSON.parse(File.read('package.json'))
 
 Pod::Spec.new do |s|
   s.name         = "RNReactNativePayfortSdk"
