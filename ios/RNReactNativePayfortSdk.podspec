@@ -1,15 +1,12 @@
 
 Pod::Spec.new do |s|
   s.name         = "RNReactNativePayfortSdk"
-  s.version      = "1.0.0"
+  s.version      = pjson["version"]
   s.summary      = "RNReactNativePayfortSdk"
-  s.description  = <<-DESC
-                  RNReactNativePayfortSdk
-                   DESC
-  s.homepage     = ""
-  s.license      = "MIT"
-  # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
-  s.author             = { "author" => "author@domain.cn" }
+  s.summary         = pjson["description"]
+  s.license         = pjson["license"]
+  s.homepage     = "https://github.com/crabbynguyen/RN-Payfort-SDK/"
+  s.author             = { "Glenn" => "glenn@simicart.com", "Chau" => "chau@simicart.com" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/author/RNReactNativePayfortSdk.git", :tag => "master" }
   s.source_files  = "RNReactNativePayfortSdk/**/*.{h,m}"
